@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+//Handle Object Shake & Block Explosions
 public class PlayerController : MonoBehaviour
 {
     public float bombCount = 0;
@@ -15,13 +16,17 @@ public class PlayerController : MonoBehaviour
     private Rigidbody[] interactables;
     private Outline[] Outlines;
 
-    private bool outlined = false;
+    private bool outlined = false;    
 
     private void Start() {  //Find all playfield rigidbodies to apply forces
         mainCam = Camera.main;
 
         interactables = GetComponentsInChildren<Rigidbody>();
         Outlines = GetComponentsInChildren<Outline>();
+
+        //Set up Dialog Controller connection to prevent early inputs
+
+        //Set up UI Handler connection to pass Shake & Bomb counts
     }
 
     public void ApplyForce(bool right){ //Apply shake to all playfield rigidbodies
@@ -52,9 +57,6 @@ public class PlayerController : MonoBehaviour
                 Outlines[i].OutlineWidth = 0;
             }
         }
-
-        bombCount--;
-        //Update Bomb Count UI
     }
 
     private void CheckForBreakables(Vector2 screenPoint){
@@ -66,13 +68,13 @@ public class PlayerController : MonoBehaviour
             {
                 if (hit.transform.tag == "Breakable"){
                     BreakBlock(hit.transform.gameObject);
-                    bombCount--;
                 }
             }
         }
     }
 
     private void BreakBlock(GameObject clickedObj){
+        bombCount--;
         Destroy(clickedObj);
     }
 
