@@ -20,11 +20,14 @@ public class DialogController : MonoBehaviour
     private int dialogPosition = 0;
     private IEnumerator coroutine;
     private float initialGravity;
+    private UIManager uiManager;
 
     void Awake() {
         if (dialog.Length > 0){ //Freeze gravity while dialog is still active
             initialGravity = Physics.gravity.y;
             Physics.gravity = Vector3.zero;
+
+            uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         } else {
             Debug.Log("Warning! No dialog entered for Dialog Controller!");
             Destroy(gameObject);
@@ -33,6 +36,7 @@ public class DialogController : MonoBehaviour
 
     void Start()
     {
+        uiManager.ShowDialog();
         AdvanceDialog();
     }
 
@@ -51,7 +55,7 @@ public class DialogController : MonoBehaviour
             dialogPosition++;
         } else {
             Physics.gravity = new Vector3(0, initialGravity, 0);
-            Destroy(gameObject);
+            uiManager.HideDialog();
         }
     }
 

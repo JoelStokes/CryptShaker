@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 //Handle Object Shake & Block Explosions
 public class PlayerController : MonoBehaviour
 {
-    public float bombCount = 0;
-    public float shakeCount = 0;
+    public int bombCount = 0;
+    public int shakeCount = 0;
 
     private Camera mainCam;
 
@@ -15,8 +16,10 @@ public class PlayerController : MonoBehaviour
     private float xForce = 200f;
     private Rigidbody[] interactables;
     private Outline[] Outlines;
+    private UIManager uiManager;
 
-    private bool outlined = false;    
+    private bool outlined = false;
+    private bool roundEnd = false;
 
     private void Start() {  //Find all playfield rigidbodies to apply forces
         mainCam = Camera.main;
@@ -24,13 +27,14 @@ public class PlayerController : MonoBehaviour
         interactables = GetComponentsInChildren<Rigidbody>();
         Outlines = GetComponentsInChildren<Outline>();
 
-        //Set up Dialog Controller connection to prevent early inputs
+        uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        uiManager.UpdateAbilities(bombCount, shakeCount);
 
-        //Set up UI Handler connection to pass Shake & Bomb counts
+        //Set up Dialog Controller connection to prevent early inputs
     }
 
     public void ApplyForce(bool right){ //Apply shake to all playfield rigidbodies
-        if (shakeCount > 0){
+        if (shakeCount > 0 && !roundEnd){
             float newX;
             if (right){
                 newX = xForce;
@@ -60,7 +64,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private void CheckForBreakables(Vector2 screenPoint){
-        if (bombCount > 0){
+        if (bombCount > 0 && !roundEnd){
             Ray ray = Camera.main.ScreenPointToRay(screenPoint);
             RaycastHit hit;
 
@@ -78,11 +82,33 @@ public class PlayerController : MonoBehaviour
         Destroy(clickedObj);
     }
 
+    public void ChangeScene(string newScene){
+        SceneManager.LoadScene(newScene);
+    }
+
+    public void ReloadScene(){
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     public void Click(InputAction.CallbackContext context){ //Input for Mouse control
         CheckForBreakables(Mouse.current.position.ReadValue());
     }
 
     public void Tap(InputAction.CallbackContext context){ //Input for Touchscreen control
         CheckForBreakables(Touchscreen.current.primaryTouch.position.ReadValue());
+    }
+
+    public bool SetRoundEnd(bool curse){
+        if (!roundEnd){
+            if (curse){
+                uiManager.DisplayCurse();
+            } else {
+                uiManager.DisplayWin();
+            }
+            roundEnd = true;
+            return true;
+        } else {
+            return false;
+        }
     }
 }

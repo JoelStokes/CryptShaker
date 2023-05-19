@@ -7,7 +7,6 @@ TagManager:
   - Breakable
   - Treasure
   - Curse
-  - Win
   layers:
   - Default
   - TransparentFX
