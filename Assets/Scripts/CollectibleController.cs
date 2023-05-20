@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
+//Handle Collectible's end of round animations for win or lose
 public class CollectibleController : MonoBehaviour
 {
     public enum RotationAxis{
@@ -34,7 +35,7 @@ public class CollectibleController : MonoBehaviour
 
             GetComponent<Rigidbody>().isKinematic = true;
 
-            transform.position = new Vector3(UIObj.transform.position.x, transform.position.y, UIObj.transform.position.z + zAdjust);
+            //transform.position = new Vector3(UIObj.transform.position.x, transform.position.y, UIObj.transform.position.z + zAdjust);
             gameObject.layer = LayerMask.NameToLayer("UI");
 
             DOTween.Init();

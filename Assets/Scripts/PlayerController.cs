@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 //Handle Object Shake & Block Explosions
 public class PlayerController : MonoBehaviour
@@ -11,7 +12,8 @@ public class PlayerController : MonoBehaviour
     public int shakeCount = 0;
     public GameObject blastPrefab;
 
-    private Camera mainCam;
+    private GameObject mainCam;
+    private float cameraShakeForce = .25f;
 
     private float yForce = 20f;    //Small bit of Y to help prevent getting stuck on small ledges
     private float xForce = 200f;
@@ -23,7 +25,7 @@ public class PlayerController : MonoBehaviour
     private bool roundEnd = false;
 
     private void Start() {  //Find all playfield rigidbodies to apply forces
-        mainCam = Camera.main;
+        mainCam = Camera.main.gameObject;
 
         interactables = GetComponentsInChildren<Rigidbody>();
         Outlines = GetComponentsInChildren<Outline>();
@@ -37,9 +39,11 @@ public class PlayerController : MonoBehaviour
     public void ApplyForce(bool right){ //Apply shake to all playfield rigidbodies
         if (shakeCount > 0 && !roundEnd){
             float newX;
-            if (right){
+            if (right){                
+                mainCam.transform.DOShakePosition(.25f, new Vector3(cameraShakeForce, 0, 0));
                 newX = xForce;
             } else {
+                mainCam.transform.DOShakePosition(.25f, new Vector3(-cameraShakeForce, 0, 0));
                 newX = -xForce;
             }
 
@@ -47,8 +51,8 @@ public class PlayerController : MonoBehaviour
                 interactables[i].AddForce(new Vector3(newX + interactables[i].velocity.x, yForce + interactables[i].velocity.y, 0));
             }
 
-            shakeCount--;
-            //Update Shake Count UI
+            //shakeCount--;
+            //Shake Limit not being used for this build, but would be added as a later feature for further puzzle complexity/challenge
         }
     }
 

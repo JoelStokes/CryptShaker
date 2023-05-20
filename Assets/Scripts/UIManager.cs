@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 
+//Handle all level UI animations & inputs
 public class UIManager : MonoBehaviour
 {
     public GameObject ControlUI;
@@ -12,6 +13,7 @@ public class UIManager : MonoBehaviour
     public GameObject WinUI;
     public GameObject CurseUI;
     public Image BGUI;
+    public GameObject CanvasCamera;
 
     public TextMeshProUGUI BombText;
     //public TextMeshProUGUI ShakeText;
@@ -25,6 +27,9 @@ public class UIManager : MonoBehaviour
     private float speed = .75f;
 
     void Awake(){
+        CanvasCamera.transform.position = new Vector3(0, CanvasCamera.transform.position.y, CanvasCamera.transform.position.z);    //Overlap Canvas Camera over level for cleaner victory animations & easier editing.
+        transform.position = new Vector3(0, transform.position.y, transform.position.z);
+
         ControlUI.SetActive(true);
         DialogUI.SetActive(true);
         WinUI.SetActive(true);
