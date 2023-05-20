@@ -7,6 +7,7 @@ TagManager:
   - Breakable
   - Treasure
   - Curse
+  - Music
   layers:
   - Default
   - TransparentFX

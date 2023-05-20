@@ -305,6 +305,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rock Round
       objectReference: {fileID: 0}
+    - target: {fileID: 4252693525465049963, guid: 301d7853a277d694e8658e7d2f99d07e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4255303188767597147, guid: 301d7853a277d694e8658e7d2f99d07e, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -1000,7 +1004,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8873112889225070914, guid: 789488cbf2e34a945b4ce3a3abe852f4, type: 3}
       propertyPath: bombCount
-      value: 9
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8873112889512692050, guid: 789488cbf2e34a945b4ce3a3abe852f4, type: 3}
       propertyPath: m_RootOrder
@@ -1156,7 +1160,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1307691856451978}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: fa40349efa56e934da0bfb32980eb9ee, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
@@ -1340,3 +1344,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cursed: 0
   rotationAxis: 0
+  yAdjust: 0

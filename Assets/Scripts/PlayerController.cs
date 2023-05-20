@@ -12,6 +12,11 @@ public class PlayerController : MonoBehaviour
     public int shakeCount = 0;
     public GameObject blastPrefab;
 
+    public AudioClip explosionSFX;
+    public AudioClip negativeSFX;
+    public AudioClip thwackSFX;
+    private float thwackVolume = .5f;
+
     private GameObject mainCam;
     private float cameraShakeForce = .25f;
 
@@ -23,6 +28,7 @@ public class PlayerController : MonoBehaviour
 
     private bool outlined = false;
     private bool roundEnd = false;
+    private bool roundStart = false;
 
     private void Start() {  //Find all playfield rigidbodies to apply forces
         mainCam = Camera.main.gameObject;
@@ -38,6 +44,8 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyForce(bool right){ //Apply shake to all playfield rigidbodies
         if (shakeCount > 0 && !roundEnd){
+            AudioSource.PlayClipAtPoint(thwackSFX, mainCam.transform.position, thwackVolume);
+
             float newX;
             if (right){                
                 mainCam.transform.DOShakePosition(.25f, new Vector3(cameraShakeForce, 0, 0));
@@ -69,7 +77,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private void CheckForBreakables(Vector2 screenPoint){
-        if (bombCount > 0 && !roundEnd){
+        if (!roundEnd && roundStart){
             Ray ray = Camera.main.ScreenPointToRay(screenPoint);
             RaycastHit hit;
 
@@ -83,9 +91,15 @@ public class PlayerController : MonoBehaviour
     }
 
     private void BreakBlock(GameObject clickedObj){
-        bombCount--;
-        Instantiate(blastPrefab, clickedObj.transform.position, Quaternion.identity);
-        Destroy(clickedObj);
+        if (bombCount > 0 ){
+            bombCount--;
+            uiManager.UpdateAbilities(bombCount, shakeCount);
+            Instantiate(blastPrefab, clickedObj.transform.position, Quaternion.identity);
+            AudioSource.PlayClipAtPoint(explosionSFX, clickedObj.transform.position);
+            Destroy(clickedObj);            
+        } else {
+            AudioSource.PlayClipAtPoint(negativeSFX, clickedObj.transform.position);
+        }
     }
 
     public void ChangeScene(string newScene){
@@ -97,11 +111,19 @@ public class PlayerController : MonoBehaviour
     }
 
     public void Click(InputAction.CallbackContext context){ //Input for Mouse control
-        CheckForBreakables(Mouse.current.position.ReadValue());
+        if (context.started){
+            CheckForBreakables(Mouse.current.position.ReadValue());
+        }
     }
 
     public void Tap(InputAction.CallbackContext context){ //Input for Touchscreen control
-        CheckForBreakables(Touchscreen.current.primaryTouch.position.ReadValue());
+        if (context.started){
+            CheckForBreakables(Touchscreen.current.primaryTouch.position.ReadValue());
+        }
+    }
+
+    public void SetRoundStart(){
+        roundStart = true;
     }
 
     public bool SetRoundEnd(bool curse){

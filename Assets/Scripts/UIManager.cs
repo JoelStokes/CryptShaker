@@ -15,6 +15,9 @@ public class UIManager : MonoBehaviour
     public Image BGUI;
     public GameObject CanvasCamera;
 
+    public AudioClip cursedSFX;
+    public AudioClip winSFX;
+
     public TextMeshProUGUI BombText;
     //public TextMeshProUGUI ShakeText;
 
@@ -58,11 +61,13 @@ public class UIManager : MonoBehaviour
     public void DisplayWin(){
         ControlUI.transform.DOMove(dialogStartPos, speed);
         WinUI.transform.DOScale(winStartScale, speed);
+        AudioSource.PlayClipAtPoint(winSFX, Camera.main.gameObject.transform.position, .7f);
     }
 
     public void DisplayCurse(){
         ControlUI.transform.DOMove(dialogStartPos, speed);
         CurseUI.transform.DOScale(winStartScale, speed);
+        AudioSource.PlayClipAtPoint(cursedSFX, Camera.main.gameObject.transform.position);
     }
 
     public void UpdateAbilities(int bombs, int shakes){

@@ -13,9 +13,13 @@ public class DialogController : MonoBehaviour
 
     public string[] dialog;
     public AnimationState[] animState;
+    public PlayerController playerController;
 
     public Animator ManAnim;
     public TextMeshProUGUI UIText;
+
+    public AudioClip clickSFX;
+    private float volume = .3f;
 
     private int dialogPosition = 0;
     private IEnumerator coroutine;
@@ -29,8 +33,7 @@ public class DialogController : MonoBehaviour
 
             uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         } else {
-            Debug.Log("Warning! No dialog entered for Dialog Controller!");
-            Destroy(gameObject);
+            EndDialog();
         }
     }
 
@@ -40,7 +43,10 @@ public class DialogController : MonoBehaviour
         AdvanceDialog();
     }
 
-    public void AdvanceDialog(){ 
+    public void AdvanceDialog(){
+        if (dialogPosition > 0)
+            AudioSource.PlayClipAtPoint(clickSFX, Camera.main.gameObject.transform.position, volume);
+
         if (dialogPosition < dialog.Length){
             if (coroutine != null)
                 StopCoroutine(coroutine);   //Check if previous coroutine is running to prevent weird text animation
@@ -54,9 +60,14 @@ public class DialogController : MonoBehaviour
                 
             dialogPosition++;
         } else {
-            Physics.gravity = new Vector3(0, initialGravity, 0);
-            uiManager.HideDialog();
+            EndDialog();
         }
+    }
+
+    private void EndDialog(){
+        Physics.gravity = new Vector3(0, initialGravity, 0);
+        uiManager.HideDialog();
+        playerController.SetRoundStart();        
     }
 
     private IEnumerator _PlayDialogueText(string text, float duration)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-//Handle Collectible's end of round animations for win or lose
+//Handle Collectible's end of round animations for win or lose & Ensure no Z movement
 public class CollectibleController : MonoBehaviour
 {
     public enum RotationAxis{
@@ -12,14 +12,30 @@ public class CollectibleController : MonoBehaviour
 
     public bool cursed = false;
     public RotationAxis rotationAxis;   //Used for level end animation
+    public float yAdjust = 0;
 
     private float zAdjust = -1.5f;
-    private float scaleMult = 2f;
+    private float scaleMult = 2.5f;
+    private float zPos;
+    private Quaternion startRotation;
+    private bool roundEnd = false;
+
+    private void Start() {
+        zPos = transform.position.z;
+        startRotation = transform.rotation;
+    }
+
+    private void Update() {
+        if (!roundEnd){
+            transform.position = new Vector3(transform.position.x, transform.position.y, zPos);
+        }
+    }
 
     void OnTriggerEnter(Collider other){
         if (other.tag == "Finish"){
             PlayerController playerController = GameObject.Find("Playfield").GetComponent<PlayerController>();
             GameObject UIObj;
+            roundEnd = true;
 
             if (cursed){
                 if (!playerController.SetRoundEnd(true)){
@@ -33,13 +49,16 @@ public class CollectibleController : MonoBehaviour
                 UIObj = GameObject.Find("Win Textbox");
             }
 
-            GetComponent<Rigidbody>().isKinematic = true;
+            Rigidbody rigi = GetComponent<Rigidbody>();
 
-            //transform.position = new Vector3(UIObj.transform.position.x, transform.position.y, UIObj.transform.position.z + zAdjust);
+            rigi.angularVelocity = Vector3.zero;
+            rigi.isKinematic = true;
+            transform.rotation = startRotation;
+
             gameObject.layer = LayerMask.NameToLayer("UI");
 
             DOTween.Init();
-            transform.DOMove(new Vector3(UIObj.transform.position.x, UIObj.transform.position.y, UIObj.transform.position.z + zAdjust), 1);
+            transform.DOMove(new Vector3(UIObj.transform.position.x, UIObj.transform.position.y + yAdjust, UIObj.transform.position.z + zAdjust), 1);
             transform.DOScale(transform.localScale * scaleMult, 1);
 
             Vector3 rotation = new Vector3();

@@ -12,10 +12,13 @@ public class TitleController : MonoBehaviour
     public GameObject CreditsMenu;
     public GameObject Title;
     public Animator cameraAnim;
+    public AudioClip clickSFX;
+    public AudioClip backSFX;
 
     private string nextScene;
     private float aboveScreen = 500f;
     private float mainStartY;
+    private float volume = .3f;
 
     private void Start() {
         DisableMenus();
@@ -38,6 +41,7 @@ public class TitleController : MonoBehaviour
     public void DisplayLevels(){
         DisableMenus();
         LevelMenu.SetActive(true);
+        AudioSource.PlayClipAtPoint(clickSFX, Camera.main.gameObject.transform.position, volume);
     }
 
     public void DisplayMenu(){
@@ -48,6 +52,7 @@ public class TitleController : MonoBehaviour
     public void DisplayCredits(){
         DisableMenus();
         CreditsMenu.SetActive(true);
+        AudioSource.PlayClipAtPoint(clickSFX, Camera.main.gameObject.transform.position, volume);
     }
 
     public void PlayLevel(string scene){
@@ -55,6 +60,7 @@ public class TitleController : MonoBehaviour
         LevelMenu.transform.DOMoveY(-aboveScreen, 1);
         nextScene = scene;
         cameraAnim.SetTrigger("Start");
+        AudioSource.PlayClipAtPoint(clickSFX, Camera.main.gameObject.transform.position, volume);
     }
 
     public void ChangeScene(){
