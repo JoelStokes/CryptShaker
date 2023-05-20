@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
 {
     public int bombCount = 0;
     public int shakeCount = 0;
+    public GameObject blastPrefab;
 
     private Camera mainCam;
 
@@ -79,6 +80,7 @@ public class PlayerController : MonoBehaviour
 
     private void BreakBlock(GameObject clickedObj){
         bombCount--;
+        Instantiate(blastPrefab, clickedObj.transform.position, Quaternion.identity);
         Destroy(clickedObj);
     }
 
