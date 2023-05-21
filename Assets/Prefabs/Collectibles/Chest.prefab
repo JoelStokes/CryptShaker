@@ -130,3 +130,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cursed: 0
   rotationAxis: 2
+  yAdjust: -0.2
